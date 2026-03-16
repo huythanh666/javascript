@@ -1,34 +1,60 @@
-function chunkArrayInGroups(arr,num){
-    let result = [];
-  for (let i = 0; i < arr.length; i += num) {
-    let arrSlice = arr.slice(i, i + num); 
-    result.push(arrSlice)
-}
-  return result
+let contacts = [
+  {
+    firstName: "Akira",
+    lastName: "Laine",
+    number: "0543236543",
+    likes: ["Pizza", "Coding", "Brownie Points"],
+  },
+  {
+    firstName: "Harry",
+    lastName: "Potter",
+    number: "0994372684",
+    likes: ["Hogwarts", "Magic", "Hagrid"],
+  },
+  {
+    firstName: "Sherlock",
+    lastName: "Holmes",
+    number: "0487345643",
+    likes: ["Intriguing Cases", "Violin"],
+  },
+  {
+    firstName: "Kristian",
+    lastName: "Vos",
+    number: "unknown",
+    likes: ["JavaScript", "Gaming", "Foxes"],
+  },
+];
+function lookUpProfile(name,info){
+    for(const i of contacts){
+        if(i.firstName == name){
+          if(info in i) {
+            return i[info]
+          } else {
+            return "No such property"
+          }
+        }       
+    }
+          return "No such contact"
+
 }
 /*
-Cách dùng while loop (Tối ưu về sự ngắn gọn)
+1. Sử dụng .find() (Phong cách hiện đại)
+Thay vì dùng vòng lặp for...of và viết return thủ công, bạn có thể dùng phương thức .find() của mảng.
+Nó giúp mã nguồn trở nên gọn gàng hơn nhiều:
 */
-function chunkArrayInGroups(arr, num) {
-  let result = [];
-  let i = 0;
-  while (i < arr.length) {
-    // i được tăng lên ngay khi đang thực hiện slice
-    result.push(arr.slice(i, i += num));
-  }
-  return result;
+function lookUpProfile(name, info) {
+  // Tìm contact có firstName khớp với name
+  const contact = contacts.find(c => c.firstName === name);
+
+  // Nếu không tìm thấy contact
+  if (!contact) return "No such contact";
+
+  // Nếu thuộc tính không tồn tại
+  if (!(info in contact)) return "No such property";
+
+  // Trả về giá trị
+  return contact[info];
 }
-/*
-2. Cách dùng Array.from() (Phong cách "Functional Programming")
-Nếu bạn làm việc trong môi trường dự án hiện đại (như React hoặc Node.js mới nhất),
-bạn có thể dùng Array.from để tạo mảng kết quả mà không cần khởi tạo let result = [] thủ công.
-*/
-function chunkArrayInGroups(arr, num) {
-  // Tính số lượng mảng con cần có
-  const length = Math.ceil(arr.length / num);
-  
-  return Array.from({ length }, (_, i) => 
-    arr.slice(i * num, i * num + num)
-  );
-}
-console.log(chunkArrayInGroups([1,2,3,4,5,6,7], 2))
+console.log("address" in contacts[1])
+let result = lookUpProfile("Kristian", "lastName");
+console.log(result)
