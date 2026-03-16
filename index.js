@@ -26,3 +26,10 @@ function findLongestWordLength(sentence){
   return longest
 
 }
+/*
+Tiêu chí,for...of (Cách của bạn),.map() / .reduce()
+Tốc độ thực thi,Nhanh nhất (Tối ưu),Chậm hơn (do callback)
+Sử dụng bộ nhớ,Thấp (Tối ưu),Cao hơn (tạo mảng trung gian)
+Khả năng đọc/bảo trì,Trung bình,Rất cao (Code sạch)
+Khả năng debug,Dễ dàng,Khó hơn (do là chuỗi hàm)
+*/
