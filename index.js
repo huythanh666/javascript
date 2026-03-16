@@ -1,52 +1,34 @@
-function mutation(arr){
-  let count = 0;
-  for(const char of arr[1]){
-    if(arr[0].toLowerCase().includes(char.toLowerCase())){
-        count++;
-    }
-  }
-  return count == arr[1].length
+function chunkArrayInGroups(arr,num){
+    let result = [];
+  for (let i = 0; i < arr.length; i += num) {
+    let arrSlice = arr.slice(i, i + num); 
+    result.push(arrSlice)
 }
-function mutation(arr) {
-  const target = arr[0].toLowerCase();
-  const test = arr[1].toLowerCase();
-
-  // Tạo một bản sao để có thể loại bỏ ký tự sau khi đã kiểm tra
-  let targetCopy = target;
-
-  for (let char of test) {
-    if (targetCopy.includes(char)) {
-      // Nếu tìm thấy, loại bỏ ký tự đó ra khỏi targetCopy
-      // để không bị đếm trùng lặp lại lần sau
-      targetCopy = targetCopy.replace(char, "");
-    } else {
-      // Nếu không tìm thấy, nghĩa là thiếu ký tự đó
-      return false;
-    }
-  }
-  return true;
+  return result
 }
-
-console.log(mutation(["hello", "hh"])); // Trả về: false (đúng)
-console.log(mutation(["hello", "hel"])); // Trả về: true (đúng)
-
-function mutation(arr) {
-  const target = arr[0].toLowerCase();
-  const test = arr[1].toLowerCase();
-  
-  const charCount = {};
-  
-  // Đếm số lượng ký tự trong chuỗi gốc
-  for (let char of target) {
-    charCount[char] = (charCount[char] || 0) + 1;
+/*
+Cách dùng while loop (Tối ưu về sự ngắn gọn)
+*/
+function chunkArrayInGroups(arr, num) {
+  let result = [];
+  let i = 0;
+  while (i < arr.length) {
+    // i được tăng lên ngay khi đang thực hiện slice
+    result.push(arr.slice(i, i += num));
   }
-  
-  // Kiểm tra chuỗi cần test
-  for (let char of test) {
-    if (!charCount[char] || charCount[char] === 0) {
-      return false;
-    }
-    charCount[char]--;
-  }
-  return true;
+  return result;
 }
+/*
+2. Cách dùng Array.from() (Phong cách "Functional Programming")
+Nếu bạn làm việc trong môi trường dự án hiện đại (như React hoặc Node.js mới nhất),
+bạn có thể dùng Array.from để tạo mảng kết quả mà không cần khởi tạo let result = [] thủ công.
+*/
+function chunkArrayInGroups(arr, num) {
+  // Tính số lượng mảng con cần có
+  const length = Math.ceil(arr.length / num);
+  
+  return Array.from({ length }, (_, i) => 
+    arr.slice(i * num, i * num + num)
+  );
+}
+console.log(chunkArrayInGroups([1,2,3,4,5,6,7], 2))
