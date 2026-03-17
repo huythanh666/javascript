@@ -1,27 +1,25 @@
-function fearNotLetter(string) {
-  let alphabet = "abcdefghijklmnopqrstuvwxyz";
-  let index = alphabet.indexOf(string[0]);
-  for (let i = 0; i < string.length; i++) {
-    if (alphabet[index + i] !== string[i]) {
-      return alphabet[index + i];
-    }
+function reverseString(string){
+  let reverse = "";
+  for(let i = string.length -1 ; i >= 0 ; i--){
+    reverse += string[i]
   }
-  return undefined;
+  return reverse
 }
-function fearNotLetter(str) {
-  for (let i = 0; i < str.length - 1; i++) {
-    // Lấy mã Unicode của ký tự hiện tại và ký tự tiếp theo
-    let currentCode = str.charCodeAt(i);
-    let nextCode = str.charCodeAt(i + 1);
-
-    // Nếu khoảng cách giữa chúng lớn hơn 1, nghĩa là có chữ bị thiếu
-    if (nextCode - currentCode > 1) {
-      // Trả về ký tự bị thiếu đó (mã của nó là currentCode + 1)
-      return String.fromCharCode(currentCode + 1);
-    }
+let result = reverseString("hello");
+function reverseString(str) {
+  return str.split('').reverse().join('');
+}
+function reverseString(str) {
+  let reversedArray = [];
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversedArray.push(str[i]);
   }
-  
-  return undefined;
+  return reversedArray.join('');
 }
-
-console.log(fearNotLetter("stvwx")); // Trả về "u"
+/*
+Tiêu chí,           Code của bạn,             Array Methods (split.reverse),          Array Push (join)
+Độ chính xác,       100%,                     100%,                                   100%
+Độ dễ đọc,          Cao,                      Rất cao,                                Trung bình
+Hiệu suất bộ nhớ,   Thấp (do tạo nhiều chuỗi tạm),Trung bình,                         Cao nhất
+Tốc độ thực thi,    Khá,                      Nhanh,                                  Nhanh nhất
+*/
