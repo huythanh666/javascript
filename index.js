@@ -1,25 +1,41 @@
-function reverseString(string){
-  let reverse = "";
-  for(let i = string.length -1 ; i >= 0 ; i--){
-    reverse += string[i]
+function  largestOfAll(arr){
+  let maxArr = [];
+  for(let i = 0; i < arr.length;  i++){
+    maxArr.push(Math.max(...arr[i]))
   }
-  return reverse
+  return maxArr
 }
-let result = reverseString("hello");
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
-function reverseString(str) {
-  let reversedArray = [];
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedArray.push(str[i]);
+let result = largestOfAll([[13, 27, 18, 26], [4, 5, 1, 3], [32, 35, 37, 39], [1000, 1001, 857, 1]])
+
+/*
+Cách 1: Tối ưu cho hiệu suất "Khủng" (Dùng cho dữ liệu cực lớn)
+Nếu bạn làm việc với các mảng con khổng lồ, sử dụng một vòng lặp lồng nhau truyền thống sẽ an toàn và nhanh hơn vì nó không bị giới hạn bởi kích thước ngăn xếp.
+*/
+function largestOfAll(arr) {
+  let results = [];
+  for (let i = 0; i < arr.length; i++) {
+    let largestNumber = arr[i][0]; // Giả định phần tử đầu tiên là lớn nhất
+    for (let j = 1; j < arr[i].length; j++) {
+      if (arr[i][j] > largestNumber) {
+        largestNumber = arr[i][j];
+      }
+    }
+    results.push(largestNumber);
   }
-  return reversedArray.join('');
+  return results;
 }
 /*
-Tiêu chí,           Code của bạn,             Array Methods (split.reverse),          Array Push (join)
-Độ chính xác,       100%,                     100%,                                   100%
-Độ dễ đọc,          Cao,                      Rất cao,                                Trung bình
-Hiệu suất bộ nhớ,   Thấp (do tạo nhiều chuỗi tạm),Trung bình,                         Cao nhất
-Tốc độ thực thi,    Khá,                      Nhanh,                                  Nhanh nhất
+Cách 2: Tối ưu về phong cách (Functional Programming)
+Nếu bạn muốn code trông chuyên nghiệp và "ngầu" hơn mà vẫn giữ được hiệu suất tương đương cách bạn đang dùng, hãy dùng .map():
+*/
+function largestOfAll(arr) {
+  return arr.map(subArr => Math.max(...subArr));
+}
+
+/*
+Tiêu chí,                       Code của bạn,                 Vòng lặp lồng (Nested Loop),                      Dùng .map()
+Độ sạch (Cleanliness),          Rất cao,                      Thấp,                                             Cao nhất
+Tốc độ (Speed),                 Nhanh,                        Nhanh  nhất,                                      Nhanh
+An toàn (Safety),               Rủi ro với mảng cực lớn,      An toàn tuyệt đối,                                Rủi ro với mảng cực lớn
+Độ phức tạp,                    O(n×m),                       O(n×m),                                           O(n×m)
 */
