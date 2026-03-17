@@ -1,40 +1,33 @@
-function findElement(arr,func){
-  for(const x of arr){
-    if(func(x)){
-      return x
-    }
+function frankenSplice(arr1,arr2,index){
+  for(const item of arr1){
+    arr2.splice(index,0,item)
+    index++;
   }
-      return undefined
-
+  return arr2;
 }
-let result = findElement([1, 3, 5, 8, 9, 10], function(num) { return num % 2 === 0; })
-console.log(result)
+let result = frankenSplice([1, 2], ["a", "b"], 1); // ["a", 1, 2, "b"]
 
 /*
-2. Các cách tiếp cận khác (Modern JS)
-Trong thực tế, JavaScript có sẵn một phương thức là .find() thực hiện chính xác nhiệm vụ này.
-Tuy nhiên, việc tự viết hàm như bạn đang làm giúp bạn hiểu sâu hơn về cách các hàm bậc cao (Higher-order functions) hoạt động.
+Cách 1: Sử dụng Spread Operator (Khuyên dùng)
+Đây là cách hiện đại, hiệu suất rất tốt vì JavaScript xử lý việc ghép mảng cực kỳ nhanh trong một lần thực thi.
 */
-function findElement(arr, func) {
-  return arr.find(func); 
-  // .find() sẽ tự động trả về phần tử đầu tiên thỏa mãn hoặc undefined
+function frankenSplice(arr1, arr2, n) {
+  // Tạo mảng mới bằng cách ghép các phần cắt của arr2 với toàn bộ arr1
+  return [...arr2.slice(0, n), ...arr1, ...arr2.slice(n)];
 }
 /*
-3. Một chút "tinh tế" để code sạch hơn
-Code của bạn đã rất ổn, nhưng mình có một lưu ý nhỏ về trình bày: trong JavaScript, nếu kết thúc hàm mà không có lệnh return,
- mặc định nó sẽ trả về undefined. Vì vậy, dòng return undefined cuối cùng có thể lược bỏ nếu bạn muốn code ngắn hơn 
-(nhưng viết rõ ra như bạn cũng rất tốt vì nó giúp người khác đọc code hiểu ngay ý đồ của bạn).
+Cách 2: Sử dụng splice một lần với Spread
+Nếu bạn vẫn muốn dùng splice, bạn có thể chèn toàn bộ arr1 vào temp chỉ với một câu lệnh:
 */
-function findElement(arr, func) {
-  for (const x of arr) {
-    if (func(x)) return x;
-  }
-  // Mặc định trả về undefined nếu vòng lặp kết thúc mà không có gì được return
+function frankenSplice(arr1, arr2, n) {
+  let temp = [...arr2]; // Hoặc arr2.slice()
+  temp.splice(n, 0, ...arr1); // Chèn toàn bộ arr1 vào vị trí n
+  return temp;
 }
 
 /*
-Phương pháp,            Tốc độ,                   Bộ nhớ,                           Ghi chú
-for...of (Của bạn),     Rất nhanh,                Cực thấp,                         Tối ưu nhất cho mọi trường hợp.
-arr.find(),             Nhanh,                    Thấp,                             "Code ngắn gọn, chuyên nghiệp."
-arr.filter()[0]         ,Chậm,                    Cao,                              Không nên dùng vì tạo mảng phụ không cần thiết.
+Tiêu chí,               Code của bạn,                         Dùng Spread [...]
+Độ phức tạp thời gian,  O(n×m),                               O(n+m) (Tối ưu hơn)
+Độ sạch của code,       Khá,                                  Rất cao
+Thao tác mảng,          Dịch chuyển nhiều lần,                Ghép một lần duy nhất
 */
