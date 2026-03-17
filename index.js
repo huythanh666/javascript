@@ -1,41 +1,40 @@
-function  largestOfAll(arr){
-  let maxArr = [];
-  for(let i = 0; i < arr.length;  i++){
-    maxArr.push(Math.max(...arr[i]))
-  }
-  return maxArr
-}
-let result = largestOfAll([[13, 27, 18, 26], [4, 5, 1, 3], [32, 35, 37, 39], [1000, 1001, 857, 1]])
-
-/*
-Cách 1: Tối ưu cho hiệu suất "Khủng" (Dùng cho dữ liệu cực lớn)
-Nếu bạn làm việc với các mảng con khổng lồ, sử dụng một vòng lặp lồng nhau truyền thống sẽ an toàn và nhanh hơn vì nó không bị giới hạn bởi kích thước ngăn xếp.
-*/
-function largestOfAll(arr) {
-  let results = [];
-  for (let i = 0; i < arr.length; i++) {
-    let largestNumber = arr[i][0]; // Giả định phần tử đầu tiên là lớn nhất
-    for (let j = 1; j < arr[i].length; j++) {
-      if (arr[i][j] > largestNumber) {
-        largestNumber = arr[i][j];
-      }
+function findElement(arr,func){
+  for(const x of arr){
+    if(func(x)){
+      return x
     }
-    results.push(largestNumber);
   }
-  return results;
+      return undefined
+
+}
+let result = findElement([1, 3, 5, 8, 9, 10], function(num) { return num % 2 === 0; })
+console.log(result)
+
+/*
+2. Các cách tiếp cận khác (Modern JS)
+Trong thực tế, JavaScript có sẵn một phương thức là .find() thực hiện chính xác nhiệm vụ này.
+Tuy nhiên, việc tự viết hàm như bạn đang làm giúp bạn hiểu sâu hơn về cách các hàm bậc cao (Higher-order functions) hoạt động.
+*/
+function findElement(arr, func) {
+  return arr.find(func); 
+  // .find() sẽ tự động trả về phần tử đầu tiên thỏa mãn hoặc undefined
 }
 /*
-Cách 2: Tối ưu về phong cách (Functional Programming)
-Nếu bạn muốn code trông chuyên nghiệp và "ngầu" hơn mà vẫn giữ được hiệu suất tương đương cách bạn đang dùng, hãy dùng .map():
+3. Một chút "tinh tế" để code sạch hơn
+Code của bạn đã rất ổn, nhưng mình có một lưu ý nhỏ về trình bày: trong JavaScript, nếu kết thúc hàm mà không có lệnh return,
+ mặc định nó sẽ trả về undefined. Vì vậy, dòng return undefined cuối cùng có thể lược bỏ nếu bạn muốn code ngắn hơn 
+(nhưng viết rõ ra như bạn cũng rất tốt vì nó giúp người khác đọc code hiểu ngay ý đồ của bạn).
 */
-function largestOfAll(arr) {
-  return arr.map(subArr => Math.max(...subArr));
+function findElement(arr, func) {
+  for (const x of arr) {
+    if (func(x)) return x;
+  }
+  // Mặc định trả về undefined nếu vòng lặp kết thúc mà không có gì được return
 }
 
 /*
-Tiêu chí,                       Code của bạn,                 Vòng lặp lồng (Nested Loop),                      Dùng .map()
-Độ sạch (Cleanliness),          Rất cao,                      Thấp,                                             Cao nhất
-Tốc độ (Speed),                 Nhanh,                        Nhanh  nhất,                                      Nhanh
-An toàn (Safety),               Rủi ro với mảng cực lớn,      An toàn tuyệt đối,                                Rủi ro với mảng cực lớn
-Độ phức tạp,                    O(n×m),                       O(n×m),                                           O(n×m)
+Phương pháp,            Tốc độ,                   Bộ nhớ,                           Ghi chú
+for...of (Của bạn),     Rất nhanh,                Cực thấp,                         Tối ưu nhất cho mọi trường hợp.
+arr.find(),             Nhanh,                    Thấp,                             "Code ngắn gọn, chuyên nghiệp."
+arr.filter()[0]         ,Chậm,                    Cao,                              Không nên dùng vì tạo mảng phụ không cần thiết.
 */
