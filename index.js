@@ -1,52 +1,21 @@
-function mutation(arr){
-  let count = 0;
-  for(const char of arr[1]){
-    if(arr[0].toLowerCase().includes(char.toLowerCase())){
-        count++;
+function bouncer(arr){
+  let result = [];
+  for(let i = 0; i < arr.length; i++){
+    if(!!arr[i]){
+      result.push(arr[i])
     }
   }
-  return count == arr[1].length
+  return result
 }
-function mutation(arr) {
-  const target = arr[0].toLowerCase();
-  const test = arr[1].toLowerCase();
-
-  // Tạo một bản sao để có thể loại bỏ ký tự sau khi đã kiểm tra
-  let targetCopy = target;
-
-  for (let char of test) {
-    if (targetCopy.includes(char)) {
-      // Nếu tìm thấy, loại bỏ ký tự đó ra khỏi targetCopy
-      // để không bị đếm trùng lặp lại lần sau
-      targetCopy = targetCopy.replace(char, "");
-    } else {
-      // Nếu không tìm thấy, nghĩa là thiếu ký tự đó
-      return false;
-    }
-  }
-  return true;
+function bouncer(arr) {
+  return arr.filter(Boolean);
 }
 
-console.log(mutation(["hello", "hh"])); // Trả về: false (đúng)
-console.log(mutation(["hello", "hel"])); // Trả về: true (đúng)
-
-function mutation(arr) {
-  const target = arr[0].toLowerCase();
-  const test = arr[1].toLowerCase();
-  
-  const charCount = {};
-  
-  // Đếm số lượng ký tự trong chuỗi gốc
-  for (let char of target) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-  
-  // Kiểm tra chuỗi cần test
-  for (let char of test) {
-    if (!charCount[char] || charCount[char] === 0) {
-      return false;
-    }
-    charCount[char]--;
-  }
-  return true;
-}
+/*
+Tiêu chí,                                             Code của bạn (Vòng lặp for),                  Dùng .filter(Boolean)
+Tốc độ thực thi,                                      Nhanh nhất (vòng lặp cơ bản luôn nhanh nhất), Nhanh (có thêm chi phí gọi hàm callback)
+Bộ nhớ,                                               Thấp,                                         Thấp
+Độ sạch (Clean Code),                                 Trung bình,                                   Rất cao
+Khả năng đọc,                                         Dễ hiểu,                                      Rất dễ hiểu
+*/
+console.log(bouncer([7, "ate", "", false, 9]))
