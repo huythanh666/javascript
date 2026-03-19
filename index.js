@@ -1,40 +1,60 @@
-function pairElement(string){
-  let result = [];
+function convertHTML(string){
+  let result = "";
   for(const char of string){
-    let dna = [];
-    dna.push(char)
-    if(char === "A"){
-      dna.push("T");
-    } else if (char === "T") {
-      dna.push("A");
-    } else if (char === "C"){
-      dna.push("G")
+    if(char === "&"){
+      result += "&amp;"
+    } else if (char === "<"){
+      result += "&lt;"
+    } else if (char === ">"){
+      result += "&gt;"
+    } else if (char === `"`){
+      result += "&quot;"
+    } else if (char === "'"){
+      result += "&apos;"
     } else {
-      dna.push("C")
+      result += char;
     }
-    result.push(dna)
   }
-  return result
+    return result
+
 }
-let result = pairElement("ATCGA");
+let result = convertHTML("Dolce & Gabbana");
 console.log(result)
-function pairElement(str) {
-  // Tạo bảng tra cứu các cặp base
-  const pairs = {
-    "A": "T",
-    "T": "A",
-    "C": "G",
-    "G": "C"
+
+function convertHTML(str) {
+  const htmlEntities = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&apos;"
   };
 
-  // Sử dụng .split().map() để tạo mảng 2 chiều nhanh chóng
-  return str.split("").map(char => [char, pairs[char]]);
+  // Sử dụng Regex để tìm tất cả các ký tự đặc biệt
+  // / [&<>"'] /g có nghĩa là tìm bất kỳ ký tự nào trong ngoặc trên toàn bộ chuỗi
+  return str.replace(/[&<>"']/g, match => htmlEntities[match]);
 }
 
+
+
+function convertHTML(str) {
+  const htmlEntities = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&apos;"
+  };
+  return str
+    .split("")
+    .map(char => htmlEntities[char] || char) // Nếu có trong bảng thì đổi, không thì giữ nguyên
+    .join("");
+}
+
+
 /*
-Tiêu chí,                   Code của bạn (if...else),                   Dùng Lookup Object (map)
-Độ sạch (Clean code),       Trung bình,                                 Rất cao
-Khả năng mở rộng,           Khó (phải thêm nhiều else if),              Dễ (chỉ cần thêm key vào Object)
-Tốc độ thực thi,            Nhanh,                                      Nhanh nhất
-Độ an toàn,                 Thấp (dễ nhầm ở else),                      Cao
+Tiêu chí,               Code của bạn (if...else),                     Dùng Regex .replace(),                          Dùng .map()
+Độ sạch code,           Trung bình,                                   Rất cao,                                        Cao
+Tốc độ thực thi,        Khá,                                          Nhanh nhất,                                     Nhanh
+Bộ nhớ,                 Trung bình,                                   Thấp,                                           Cao hơn (do tạo mảng trung gian)
 */
