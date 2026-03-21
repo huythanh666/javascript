@@ -1,28 +1,25 @@
-function destroyer(arr,...rest){
-    return arr.filter((e) => {
-        return !rest.some(number => number === e)
-    })
-  
+function whatIsInAName(collection, source) {
+  // 1. Lấy danh sách các "key" (thuộc tính) cần kiểm tra từ đối tượng source
+  const sourceKeys = Object.keys(source);
+console.log(sourceKeys)
+  // 2. Lọc mảng collection
+  return collection.filter(obj => {
+    // 3. Kiểm tra xem MỌI key trong sourceKeys có khớp với obj hiện tại không
+    return sourceKeys.every(key => {
+      // Điều kiện: obj phải có thuộc tính 'key' và giá trị phải bằng với source
+      return obj.hasOwnProperty(key) && obj[key] === source[key];
+    });
+  });
 }
 
-let result = destroyer([1, 2, 3, 5, 1, 2, 3], 2,3)
+// Ví dụ kiểm tra:
+const result = whatIsInAName(
+  [
+    { first: "Romeo", last: "Montague" }, 
+    { first: "Mercutio", last: null }, 
+    { first: "Tybalt", last: "Capulet" }
+  ], 
+  { last: "Capulet" }
+);
 
-
-function destroyer(arr, ...rest) {
-  return arr.filter(e => !rest.includes(e));
-}
-
-function destroyer(arr, ...rest) {
-  const valuesToRemove = new Set(rest);
-  return arr.filter(e => !valuesToRemove.has(e));
-}
-console.log(result)
-
-
-/*
-
-Đặc điểm,                      filter + some (Của bạn),                 filter + includes,                                      filter + Set
-Độ phức tạp,                   O(n×m),                                   O(n×m),                                                O(n+m)
-Tốc độ (Time),                 Chậm nhất (do phải chạy callback function mỗi lần),Trung bình (nhanh hơn some một chút),         Nhanh nhất (tìm kiếm trong Set là O(1))
-Bộ nhớ (Space),                Thấp (không tạo cấu trúc dữ liệu mới),   Thấp (không tạo cấu trúc dữ liệu mới),                  Cao hơn (tốn thêm bộ nhớ để tạo Set)
-*/
+console.log(result); // [{ first: "Tybalt", last: "Capulet" }]
