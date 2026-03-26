@@ -1,30 +1,81 @@
-const galleryItems = document.querySelectorAll('.gallery-item');
-const lightbox = document.querySelector('.lightbox');
-const lightboxImage = document.getElementById('lightbox-image');
-const closeBtn = document.getElementById('close-btn');
+const options = ["Rock", "Paper", "Scissors"];
 
-// 1. Mở Lightbox khi click vào ảnh thumbnail
-galleryItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-        const thumbnailSrc = e.target.src;
-        
-        // User Story: Loại bỏ "-thumbnail" để lấy link ảnh full-size
-        const fullSizeSrc = thumbnailSrc.replace('-thumbnail', '');
-        
-        lightboxImage.src = fullSizeSrc;
-        lightbox.style.display = 'flex'; // Hiển thị lightbox dưới dạng flex
-    });
+function getRandomComputerResult() {
+  const randomIndex = Math.floor(Math.random() * options.length);
+  return options[randomIndex];
+}
+
+function hasPlayerWonTheRound(playerChoice, computerChoice) {
+  return (
+    (playerChoice === "Rock" && computerChoice === "Scissors") ||
+    (playerChoice === "Scissors" && computerChoice === "Paper") ||
+    (playerChoice === "Paper" && computerChoice === "Rock")
+  );
+}
+
+let playerScore = 0;
+let computerScore = 0;
+
+function getRoundResults(userOption) {
+  const computerResult = getRandomComputerResult();
+
+  if (hasPlayerWonTheRound(userOption, computerResult)) {
+    playerScore++;
+    return `Player wins! ${userOption} beats ${computerResult}`;
+  } else if (computerResult === userOption) {
+    return `It's a tie! Both chose ${userOption}`;
+  } else {
+    computerScore++;
+    return `Computer wins! ${computerResult} beats ${userOption}`;
+  }
+}
+
+const playerScoreSpanElement = document.getElementById("player-score");
+const computerScoreSpanElement = document.getElementById("computer-score");
+const roundResultsMsg = document.getElementById("results-msg");
+const winnerMsgElement = document.getElementById("winner-msg");
+const optionsContainer = document.querySelector(".options-container");
+const resetGameBtn = document.getElementById("reset-game-btn");
+
+function showResults(userOption) {
+  roundResultsMsg.innerText = getRoundResults(userOption);
+  computerScoreSpanElement.innerText = computerScore;
+  playerScoreSpanElement.innerText = playerScore;
+
+  if (playerScore === 3 || computerScore === 3) {
+    winnerMsgElement.innerText = `${
+      playerScore === 3 ? "Player" : "Computer"
+    } has won the game!`;
+
+    resetGameBtn.style.display = "block";
+    optionsContainer.style.display = "none";
+  }
+};
+function resetGame(){
+  playerScore = 0;
+  computerScore = 0;
+  playerScoreSpanElement.innerText = playerScore;
+  computerScoreSpanElement.innerText = computerScore;
+  resetGameBtn.style.display = "none";
+  optionsContainer.style.display = "block";
+  winnerMsgElement.innerText = "";
+  roundResultsMsg.innerText = "";
+}
+
+resetGameBtn.addEventListener("click", resetGame);
+
+const rockBtn = document.getElementById("rock-btn");
+const paperBtn = document.getElementById("paper-btn");
+const scissorsBtn = document.getElementById("scissors-btn");
+
+rockBtn.addEventListener("click", function () {
+  showResults("Rock");
 });
 
-// 2. Đóng Lightbox khi click vào nút Close
-closeBtn.addEventListener('click', () => {
-    lightbox.style.display = 'none';
+paperBtn.addEventListener("click", function () {
+  showResults("Paper");
 });
 
-// 3. Đóng Lightbox khi click vào vùng nền (vùng .lightbox)
-lightbox.addEventListener('click', (e) => {
-    // Chỉ đóng nếu người dùng click vào nền đen, không phải click vào ảnh
-    if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-    }
+scissorsBtn.addEventListener("click", function () {
+  showResults("Scissors");
 });
