@@ -1,23 +1,39 @@
-.tabs [role="tablist"] {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+body {
+    transition: all 0.3s ease;
+    font-family: sans-serif;
+    padding: 2rem;
 }
 
-[role="tab"] {
-  padding: 0.5rem 1rem;
-  background: #eee;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  font-weight: bold;
+/* Các class theme */
+.theme-light {
+    background-color: #f0f0f0;
+    color: #222;
 }
 
-[role="tab"][aria-selected="true"] {
-  background: #fff;
-  border-bottom: 2px solid dodgerblue;
+.theme-dark {
+    background-color: #222;
+    color: #f0f0f0;
 }
 
-[role="tabpanel"] {
-  border: 1px solid #ccc;
-  padding: 1rem;
+#theme-dropdown {
+    list-style: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: fit-content;
+    margin-top: 10px;
+}
+
+#theme-dropdown li {
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+#theme-dropdown li:hover {
+    background-color: #ddd;
+    color: #000;
+}
+
+#theme-message {
+    margin-top: 20px;
+    font-weight: bold;
 }
