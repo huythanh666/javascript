@@ -1,158 +1,128 @@
-const playlistSongs = document.getElementById("playlist-songs");
-const playButton = document.getElementById("play");
-const pauseButton = document.getElementById("pause");
-const nextButton = document.getElementById("next");
-const previousButton = document.getElementById("previous");
-const playingSong = document.getElementById("player-song-title");
-const songArtist = document.getElementById("player-song-artist");
-const allSongs = [
-  {
-    id: 0,
-    title: "Hello World",
-    artist: "Rafael",
-    duration: "0:23",
-    src: "https://cdn.freecodecamp.org/curriculum/js-music-player/hello-world.mp3",
-  },
-  {
-    id: 1,
-    title: "In the Zone",
-    artist: "Rafael",
-    duration: "0:11",
-    src: "https://cdn.freecodecamp.org/curriculum/js-music-player/in-the-zone.mp3",
-  },
-  {
-    id: 2,
-    title: "Camper Cat",
-    artist: "Rafael",
-    duration: "0:21",
-    src: "https://cdn.freecodecamp.org/curriculum/js-music-player/camper-cat.mp3",
-  },
-  {
-    id: 3,
-    title: "Electronic",
-    artist: "Rafael",
-    duration: "0:15",
-    src: "https://cdn.freecodecamp.org/curriculum/js-music-player/electronic.mp3",
-  },
-  {
-    id: 4,
-    title: "Sailing Away",
-    artist: "Rafael",
-    duration: "0:22",
-    src: "https://cdn.freecodecamp.org/curriculum/js-music-player/sailing-away.mp3",
-  },
-];
+const taskForm = document.getElementById("task-form");
+const confirmCloseDialog = document.getElementById("confirm-close-dialog");
+const openTaskFormBtn = document.getElementById("open-task-form-btn");
+const closeTaskFormBtn = document.getElementById("close-task-form-btn");
+const addOrUpdateTaskBtn = document.getElementById("add-or-update-task-btn");
+const cancelBtn = document.getElementById("cancel-btn");
+const discardBtn = document.getElementById("discard-btn");
+const tasksContainer = document.getElementById("tasks-container");
+const titleInput = document.getElementById("title-input");
+const dateInput = document.getElementById("date-input");
+const descriptionInput = document.getElementById("description-input");
 
-const audio = new Audio();
+const taskData = JSON.parse(localStorage.getItem("data")) || [];
+let currentTask = {};
 
-const userData = {
-  songs: allSongs,
-  currentSong: null,
-  songCurrentTime: 0,
+const removeSpecialChars = (val) => {
+  return val.trim().replace(/[^A-Za-z0-9\-\s]/g, '')
 }
 
-const playSong = (id, start=true) => {
-  const song = userData.songs.find((song) => song.id === id);
-  audio.src = song.src;
-  audio.title = song.title;
-  if (userData.currentSong === null || start) {
-    audio.currentTime = 0
-  } else {
-    audio.currentTime = userData.songCurrentTime;
+const addOrUpdateTask = () => {
+   if(!titleInput.value.trim()){
+    alert("Please provide a title");
+    return;
   }
-  userData.currentSong = song;
-  playButton.classList.add("playing");
-  setPlayerDisplay();
-  highlightCurrentSong();
-  setPlayButtonAccessibleText();
-  audio.play();
-}
+  const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
+  const taskObj = {
+    id: `${removeSpecialChars(titleInput.value).toLowerCase().split(" ").join("-")}-${Date.now()}`,
+    title: titleInput.value,
+    date: dateInput.value,
+    description: descriptionInput.value,
+  };
 
-const pauseSong = () => {
-  userData.songCurrentTime = audio.currentTime;
-  playButton.classList.remove("playing");
-  audio.pause();
-}
-
-const getCurrentSongIndex = () => userData.songs.indexOf(userData.currentSong);
-
-const getNextSong = () => userData.songs[getCurrentSongIndex() + 1];
-
-const getPreviousSong = () => userData.songs[getCurrentSongIndex() - 1];
-
-const playPreviousSong = () => {
-  if (userData.currentSong === null) return;
-  const previousSong = getPreviousSong();
-  if (previousSong) {
-    playSong(previousSong.id);
+  if (dataArrIndex === -1) {
+    taskData.unshift(taskObj);
   } else {
-    playSong(userData.songs[0].id);
+    taskData[dataArrIndex] = taskObj;
   }
+
+  localStorage.setItem("data", JSON.stringify(taskData));
+  updateTaskContainer()
+  reset()
 };
 
-const playNextSong = () => {
-  if (userData.currentSong === null) {
-    playSong(userData.songs[0].id);
-    return
-  }
-  const nextSong = getNextSong();
-  if (nextSong) {
-    playSong(nextSong.id);
-  } else {
-    userData.currentSong = null;
-    userData.songCurrentTime = 0;
-    setPlayerDisplay();
-    highlightCurrentSong();
-    setPlayButtonAccessibleText();
-    pauseSong();
-  }
-}
+const updateTaskContainer = () => {
+  tasksContainer.innerHTML = "";
 
-const setPlayerDisplay = () => {
-  const currentTitle = userData.currentSong?.title;
-  const currentArtist = userData.currentSong?.artist;
-
-  playingSong.textContent = currentTitle ? currentTitle : "";
-  songArtist.textContent = currentArtist ? currentArtist : "";
-};
-
-const highlightCurrentSong = () => {
-  const previousCurrentSong = document.querySelector('.playlist-song[aria-current="true"]');
-  previousCurrentSong?.removeAttribute("aria-current");
-  const songToHighlight = document.getElementById(
-    `song-${userData.currentSong?.id}`
+  taskData.forEach(
+    ({ id, title, date, description }) => {
+        (tasksContainer.innerHTML += `
+        <div class="task" id="${id}">
+          <p><strong>Title:</strong> ${title}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Description:</strong> ${description}</p>
+          <button onclick="editTask(this)" type="button" class="btn">Edit</button>
+          <button onclick="deleteTask(this)" type="button" class="btn">Delete</button> 
+        </div>
+      `)
+    }
   );
-  
-  songToHighlight?.setAttribute("aria-current", "true");
 };
 
-const setPlayButtonAccessibleText = () => {
-  const song = userData.currentSong;
-  playButton.setAttribute("aria-label", userData.currentSong ? `Play ${song.title}` : "Play");
-};
 
-playButton.addEventListener("click", () => {
-  if (userData.currentSong === null) {
-    playSong(userData.songs[0].id);
+const deleteTask = (buttonEl) => {
+  const dataArrIndex = taskData.findIndex(
+    (item) => item.id === buttonEl.parentElement.id
+  );
+
+  buttonEl.parentElement.remove();
+  taskData.splice(dataArrIndex, 1);
+  localStorage.setItem("data", JSON.stringify(taskData));
+}
+
+const editTask = (buttonEl) => {
+    const dataArrIndex = taskData.findIndex(
+    (item) => item.id === buttonEl.parentElement.id
+  );
+
+  currentTask = taskData[dataArrIndex];
+
+  titleInput.value = currentTask.title;
+  dateInput.value = currentTask.date;
+  descriptionInput.value = currentTask.description;
+
+  addOrUpdateTaskBtn.innerText = "Update Task";
+
+  taskForm.classList.toggle("hidden");  
+}
+
+const reset = () => {
+  addOrUpdateTaskBtn.innerText = "Add Task";
+  titleInput.value = "";
+  dateInput.value = "";
+  descriptionInput.value = "";
+  taskForm.classList.toggle("hidden");
+  currentTask = {};
+}
+
+if (taskData.length) {
+  updateTaskContainer();
+}
+
+openTaskFormBtn.addEventListener("click", () =>
+  taskForm.classList.toggle("hidden")
+);
+
+closeTaskFormBtn.addEventListener("click", () => {
+  const formInputsContainValues = titleInput.value || dateInput.value || descriptionInput.value;
+  const formInputValuesUpdated = titleInput.value !== currentTask.title || dateInput.value !== currentTask.date || descriptionInput.value !== currentTask.description;
+
+  if (formInputsContainValues && formInputValuesUpdated) {
+    confirmCloseDialog.showModal();
   } else {
-    playSong(userData.currentSong.id, false);
+    reset();
   }
 });
 
-const songs = document.querySelectorAll(".playlist-song");
+cancelBtn.addEventListener("click", () => confirmCloseDialog.close());
 
-songs.forEach((song) => {
-  const id = song.getAttribute("id").slice(5);
-  const songBtn = song.querySelector("button");
-  songBtn.addEventListener("click", () => {
-      playSong(Number(id));
-  })
-})
+discardBtn.addEventListener("click", () => {
+  confirmCloseDialog.close();
+  reset()
+});
 
-pauseButton.addEventListener("click", pauseSong);
+taskForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-nextButton.addEventListener("click", playNextSong);
-
-previousButton.addEventListener("click", playPreviousSong);
-
-audio.addEventListener("ended",playNextSong)
+  addOrUpdateTask();
+});
